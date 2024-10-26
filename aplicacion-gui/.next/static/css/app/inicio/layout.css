@@ -1,0 +1,200 @@
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[3].use[1]!./node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js??ruleSet[1].rules[13].oneOf[3].use[2]!./node_modules/next/font/local/target.css?{"path":"src\\app\\inicio\\layout.tsx","import":"","arguments":[{"src":"../fonts/GeistVF.woff","variable":"--font-geist-sans","weight":"100 900"}],"variableName":"geistSans"} ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@font-face {
+font-family: 'geistSans';
+src: url(/_next/static/media/4473ecc91f70f139-s.p.woff) format('woff');
+font-display: swap;
+font-weight: 100 900;
+}@font-face {font-family: 'geistSans Fallback';src: local("Arial");ascent-override: 85.83%;descent-override: 20.52%;line-gap-override: 9.33%;size-adjust: 107.19%
+}.__className_1e4310 {font-family: 'geistSans', 'geistSans Fallback'
+}.__variable_1e4310 {--font-geist-sans: 'geistSans', 'geistSans Fallback'
+}
+
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[3].use[1]!./node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js??ruleSet[1].rules[13].oneOf[3].use[2]!./node_modules/next/font/local/target.css?{"path":"src\\app\\inicio\\layout.tsx","import":"","arguments":[{"src":"../fonts/GeistMonoVF.woff","variable":"--font-geist-mono","weight":"100 900"}],"variableName":"geistMono"} ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@font-face {
+font-family: 'geistMono';
+src: url(/_next/static/media/463dafcda517f24f-s.p.woff) format('woff');
+font-display: swap;
+font-weight: 100 900;
+}@font-face {font-family: 'geistMono Fallback';src: local("Arial");ascent-override: 69.97%;descent-override: 16.73%;line-gap-override: 7.61%;size-adjust: 131.49%
+}.__className_c3aa02 {font-family: 'geistMono', 'geistMono Fallback'
+}.__variable_c3aa02 {--font-geist-mono: 'geistMono', 'geistMono Fallback'
+}
+
+/*!************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./src/app/styles/globals.css ***!
+  \************************************************************************************************************************************************************************************************************************************************************************/
+/* styles/globals.css */
+
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Incluye el padding y el border en el tamaño total */
+}
+
+/* Estilos para el body */
+/* Estilos generales para el body */
+body {
+  display: flex; /* Activar flexbox */
+  flex-direction: column; /* Disposición vertical */
+  min-height: 100vh; /* Asegurar que el body ocupe al menos el 100% de la altura de la ventana */
+  background-color: #F9F9F9; /* Color de fondo suave */
+  color: #333; /* Color del texto oscuro */
+  font-family: 'Arial', sans-serif; /* Tipo de letra */
+  padding: 0; /* Sin padding */
+  text-align: center; /* Centrar el texto en el body */
+}
+
+/* Estilos para el Header */
+header {
+  display: flex; /* Activar flexbox */
+  justify-content: space-between; /* Espacio entre el título y el menú */
+  align-items: center; /* Centrar verticalmente */
+  background: linear-gradient(135deg, rgba(63, 219, 247, 0.8), rgba(0, 128, 255, 0.8)); /* Gradiente azul */
+  padding: 10px; /* Reducción del padding */
+  width: 100%; /* Ancho completo */
+}
+
+/* Estilo para el título */
+header h1 {
+  margin: 0; /* Sin margen para un diseño limpio */
+  font-size: 1.5em; /* Tamaño de fuente */
+  color: white; /* Texto blanco */
+  text-align: center; /* Centrar el texto */
+  flex: 1; /* Permitir que el título ocupe espacio */
+}
+
+/* Estilos para el menú de navegación */
+nav {
+  margin-left: auto; /* Alinear el menú a la derecha */
+}
+
+nav ul {
+  list-style: none; /* Sin estilo de lista */
+  padding: 0; /* Sin padding */
+  margin: 0; /* Sin margen */
+  display: flex; /* Mostrar en línea usando flexbox */
+}
+
+nav ul li {
+  margin: 0 15px; /* Espacio entre los enlaces */
+}
+
+nav ul li a {
+  color: white; /* Color de enlace blanco */
+  text-decoration: none; /* Sin subrayado */
+  font-weight: bold; /* Negrita para los enlaces */
+  transition: color 0.3s; /* Transición suave para el color */
+}
+
+nav ul li a:hover {
+  color: #ffcc00; /* Color amarillo al pasar el ratón */
+}
+
+/* Estilos para el logo */
+.logo {
+  height: 50px; /* Ajusta la altura según sea necesario */
+  margin-left: 20px; /* Espacio a la izquierda */
+}
+/* Estilos para el contenido */
+main {
+  flex: 1; /* Ocupa todo el espacio disponible entre header y footer */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra el contenido verticalmente si es necesario */
+  align-items: center; /* Centra el contenido horizontalmente */
+}
+
+/* Estilos para el Footer */
+footer {
+  background: linear-gradient(135deg, rgba(63, 219, 247, 0.8), rgba(0, 128, 255, 0.8)); /* Mismo gradiente que el header */
+  padding: 15px;
+  text-align: center; /* Centrar texto */
+  width: 100%; /* Ancho completo */
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2); /* Sombra superior para el efecto de elevación */
+}
+
+footer p {
+  margin: 0; /* Sin margen */
+  color: white; /* Texto blanco */
+  font-size: 1em; /* Tamaño de fuente normal */
+  max-width: 600px; /* Ancho máximo para el párrafo */
+  margin: 10px auto; /* Margen superior e inferior, centrado horizontalmente */
+  line-height: 1.5; /* Mejora la legibilidad */
+}
+
+/* Estilos para el título */
+h1 {
+  font-size: 2em; /* Tamaño de fuente grande para el título */
+  margin: 20px 0; /* Margen superior e inferior */
+}
+
+/* Estilos para el párrafo introductorio */
+p {
+  font-size: 1.1em; /* Tamaño de fuente ligeramente más grande que el normal */
+  margin: 10px auto; /* Margen superior e inferior; auto para centrar */
+  color: #555; /* Color de texto gris oscuro */
+  max-width: 600px; /* Ancho máximo para evitar que el párrafo se extienda hasta los extremos */
+  line-height: 1.5; /* Mejora la legibilidad */
+}
+
+/* Estilos para el formulario */
+form {
+  margin: 20px 0; /* Margen para separar del título y párrafo */
+}
+
+/* Estilos para el input de texto */
+input[type="text"] {
+  padding: 10px; /* Espaciado interno */
+  border: 1px solid #ccc; /* Borde gris claro */
+  border-radius: 5px; /* Bordes redondeados */
+  width: 300px; /* Ancho del input */
+  max-width: 100%; /* Evitar que el input exceda el ancho de su contenedor */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  transition: border-color 0.3s; /* Transición suave para el color del borde */
+}
+
+/* Estilos para el input en foco */
+input[type="text"]:focus {
+  border-color: #007BFF; /* Cambia el color del borde al foco */
+  outline: none; /* Sin borde de enfoque */
+}
+
+/* Estilos para el botón */
+button {
+  padding: 10px 15px; /* Espaciado interno */
+  background-color: #007BFF; /* Color de fondo azul */
+  color: white; /* Texto blanco */
+  border: none; /* Sin borde */
+  border-radius: 5px; /* Bordes redondeados */
+  cursor: pointer; /* Cambia el cursor a mano al pasar sobre el botón */
+  transition: background-color 0.3s; /* Transición suave para el color de fondo */
+}
+
+/* Estilos para el botón al pasar el ratón */
+button:hover {
+  background-color: #0056b3; /* Color más oscuro al pasar el ratón */
+}
+
+/* Estilos para el mensaje de error */
+.error-message {
+  color: red; /* Texto rojo para mensajes de error */
+  font-size: 0.9em; /* Tamaño de fuente más pequeño */
+}
+
+/* Estilos para el enlace de descarga */
+a {
+  color: #007BFF; /* Color del enlace */
+  text-decoration: none; /* Sin subrayado */
+  font-weight: bold; /* Texto en negrita */
+}
+
+/* Estilos para el enlace al pasar el ratón */
+a:hover {
+  text-decoration: underline; /* Subrayar al pasar el ratón */
+}
+
