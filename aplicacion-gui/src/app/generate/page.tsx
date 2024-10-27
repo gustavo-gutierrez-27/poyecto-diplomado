@@ -4,17 +4,17 @@ import React, { useState } from 'react';
 import axiosInstance from '../../axiosConfig'; // Importa la instancia configurada
 
 const PrincipalPage = () => {
-  const [name, setName] = useState('');
-  const [downloadLink, setDownloadLink] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [name, setName] = useState<string>(''); // Tipo explícito
+  const [downloadLink, setDownloadLink] = useState<string>(''); // Tipo explícito
+  const [errorMessage, setErrorMessage] = useState<string>(''); // Tipo explícito
 
   // Expresión regular para validar que no haya espacios ni caracteres especiales
-  const validateInput = (value) => {
+  const validateInput = (value: string): boolean => { // Tipo de parámetro y retorno
     const regex = /^[a-zA-Z0-9]+$/; // Permite solo letras y números
     return regex.test(value);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => { // Tipo de evento
     const value = e.target.value;
 
     // Validar el nuevo valor
@@ -26,7 +26,7 @@ const PrincipalPage = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => { // Tipo de evento
     e.preventDefault();
 
     // Solo procede si no hay un mensaje de error

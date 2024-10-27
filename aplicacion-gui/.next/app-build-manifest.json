@@ -10,17 +10,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/generate/page.js"
-    ],
-    "/inicio/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/inicio/layout.css",
-      "static/chunks/app/inicio/layout.js"
-    ],
-    "/inicio/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/inicio/page.js"
     ]
   }
 }

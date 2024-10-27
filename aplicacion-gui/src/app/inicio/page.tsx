@@ -1,4 +1,4 @@
-// src/app/inicio/page.tsx
+
 import React from 'react';
 
 const InicioPage: React.FC = () => {

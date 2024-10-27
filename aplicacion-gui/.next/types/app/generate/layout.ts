@@ -1,4 +1,4 @@
-// File: C:\Users\Usuario\Desktop\prueba_react\aplicacion-gui\src\app\generate\layout.tsx
+// File: C:\Users\tavog\OneDrive\Escritorio\Universidad\poyecto-diplomado\aplicacion-gui\src\app\generate\layout.tsx
 import * as entry from '../../../../src/app/generate/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

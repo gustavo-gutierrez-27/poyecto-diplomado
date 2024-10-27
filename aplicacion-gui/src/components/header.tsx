@@ -1,5 +1,6 @@
 // src/components/Header.tsx
 import React from 'react';
+import Image from 'next/image';
 
 const Header = () => {
   return (
@@ -11,7 +12,8 @@ const Header = () => {
           <li><a href="/generate">Generar Llave</a></li>
         </ul>
       </nav>
-      <img src={"../img/logo.png"} alt="Logo" className="logo" />
+      {/* Cambiamos img por Image y ajustamos la ruta */}
+      <Image src="/img/logo.png" alt="Logo" className="logo" width={150} height={150} />
     </header>
   );
 };
