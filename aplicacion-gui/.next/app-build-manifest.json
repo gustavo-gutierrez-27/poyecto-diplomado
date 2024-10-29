@@ -1,15 +1,15 @@
 {
   "pages": {
-    "/generate/layout": [
+    "/inicio/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/generate/layout.css",
-      "static/chunks/app/generate/layout.js"
+      "static/css/app/inicio/layout.css",
+      "static/chunks/app/inicio/layout.js"
     ],
-    "/generate/page": [
+    "/inicio/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/generate/page.js"
+      "static/chunks/app/inicio/page.js"
     ]
   }
 }
