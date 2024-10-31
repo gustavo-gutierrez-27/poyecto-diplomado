@@ -6,8 +6,10 @@ const nextConfig: NextConfig = {
   env: {
     API_URL: process.env.API_URL || 'https://localhost:8443/api', // Configuración de URL de API con HTTP
   },
-  // Otras configuraciones según tus necesidades
-  // Ejemplo: configurar rutas personalizadas, manejo de imágenes, etc.
+  output: 'export', // Mantiene la salida para exportar
+  images: {
+    unoptimized: true, // Desactiva la optimización de imágenes
+  },
 };
 
 export default nextConfig;

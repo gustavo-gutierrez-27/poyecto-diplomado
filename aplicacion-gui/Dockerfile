@@ -1,32 +1,29 @@
-# Utilizar una imagen de Node.js como base
-FROM node:18-alpine AS builder
-
-# Establecer el directorio de trabajo
+# Etapa de construcción
+FROM node:18.18.0 AS builder
 WORKDIR /app
 
-# Copiar archivos de configuración de paquetes
+# Instala dependencias
 COPY package*.json ./
-
-# Instalar las dependencias
 RUN npm install
 
-# Copiar el resto de la aplicación
+# Copia y compila la aplicación
 COPY . .
-
-# Compilar la aplicación
 RUN npm run build
 
-# Usar una imagen más ligera para ejecutar la aplicación
-FROM node:18-alpine AS runner
-
-# Establecer el directorio de trabajo
+# Etapa de producción
+FROM node:18.18.0 AS production
 WORKDIR /app
 
-# Copiar archivos construidos desde la etapa anterior
-COPY --from=builder /app ./
+# Copia archivos necesarios para producción
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
 
-# Copiar el archivo de configuración TypeScript
-COPY --from=builder /app/next.config.ts ./ 
+# Instala solo las dependencias de producción
+RUN npm install --only=production
 
-# Establecer el comando por defecto para el modo de desarrollo
-CMD ["npm", "run", "dev"]
+# Expone el puerto que Next.js usará
+EXPOSE 3000
+
+# Comando por defecto para iniciar la aplicación
+CMD ["npm", "start"]

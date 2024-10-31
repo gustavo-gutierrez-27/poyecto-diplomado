@@ -52,6 +52,22 @@ services:
         ipv4_address: 172.19.0.3  # IP específica para la aplicación backend
     restart: always
 
+  firewall:
+    build:
+      context: ../firewall/  # Asegúrate de que este directorio exista con el Dockerfile y scripts
+      dockerfile: Dockerfile
+    container_name: firewall
+    cap_add:
+      - NET_ADMIN
+    privileged: true
+    ports:
+      - "443:443" # Exponer el puerto 443 al exterior
+      - "444:444" # Exponer el puerto 443 al exterior
+    networks:
+      custom_network:
+        ipv4_address: 172.19.0.2  # IP específica para el contenedor firewall
+    restart: always
+
 networks:
   custom_network:
     driver: bridge

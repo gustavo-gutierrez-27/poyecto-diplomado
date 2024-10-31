@@ -1,3 +1,4 @@
 {
-  "/inicio/page": "app/inicio/page.js"
+  "/inicio/page": "app/inicio/page.js",
+  "/generate/page": "app/generate/page.js"
 }
