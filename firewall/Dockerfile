@@ -1,12 +1,20 @@
-# Usa una imagen base de Alpine
-FROM alpine:latest
+# Usa una imagen base de Ubuntu
+FROM ubuntu:22.04
 
-# Instala iptables (sin nftables) y bash
-RUN apk add --no-cache iptables bash
+# Actualiza la lista de paquetes
+RUN apt-get update && \
+    apt-get install -y iptables 
 
-# Copia el script de configuración al contenedor
-COPY rules-firewall.sh /usr/local/bin/rules-firewall.sh
-RUN chmod +x /usr/local/bin/rules-firewall.sh
+RUN update-alternatives --set iptables /usr/sbin/iptables-legacy
 
-# Comando por defecto
-ENTRYPOINT ["/usr/local/bin/rules-firewall.sh"]
+# Copia el script de configuración de iptables al contenedor
+COPY rules-firewall.sh /usr/local/bin/setup_iptables.sh
+
+# Haz que el script sea ejecutable
+RUN chmod +x /usr/local/bin/setup_iptables.sh
+
+EXPOSE 80
+EXPOSE 8080
+
+# Ejecuta el script de configuración de iptables y mantiene el contenedor activo
+CMD ["/bin/bash", "-c", "/usr/local/bin/setup_iptables.sh && tail -f /dev/null"]

@@ -23,7 +23,7 @@ COPY --from=builder /app/public ./public
 RUN npm install --only=production
 
 # Expone el puerto que Next.js usará
-EXPOSE 3000
+#EXPOSE 3000
 
 # Comando por defecto para iniciar la aplicación
 CMD ["npm", "start"]

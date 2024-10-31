@@ -5,9 +5,7 @@ services:
   nextjs_app:
     build:
       context: .
-      dockerfile: Dockerfile  
-    ports:
-      - "3000:3000"  
+      dockerfile: Dockerfile 
     networks:
       custom_network:
         ipv4_address: 172.19.0.5  # IP específica para la aplicación frontend
@@ -20,9 +18,7 @@ services:
       MYSQL_ROOT_PASSWORD: 12345  
       MYSQL_DATABASE: keys_generator
       MYSQL_USER: intellij
-      MYSQL_PASSWORD: 1234
-    ports:
-      - "3307:3306"  
+      MYSQL_PASSWORD: 1234  
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -40,11 +36,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=intellij
       - SPRING_DATASOURCE_PASSWORD=1234
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SERVER_SSL_KEY_STORE_PASSWORD=123456
-      - SERVER_SSL_KEY_STORE_TYPE=JKS
-      - SERVER_SSL_KEY_ALIAS=mykey
-    ports:
-      - "8443:8443"  
     depends_on:
       - mysql_db  
     networks:
@@ -52,21 +43,22 @@ services:
         ipv4_address: 172.19.0.3  # IP específica para la aplicación backend
     restart: always
 
+
+    # Nuevo servicio para iptables
   firewall:
     build:
-      context: ../firewall/  # Asegúrate de que este directorio exista con el Dockerfile y scripts
+      context: ../firewall/  
       dockerfile: Dockerfile
-    container_name: firewall
+    ports:
+      - "80:80"  # Exponer el puerto 80 para la aplicacion front-end
+      - "8080:8080" # Exponer el puerto 80 para la aplicacion back-end
+    networks:
+      custom_network:
+        ipv4_address: 172.19.0.2  # IP específica para el servicio iptables
+    restart: always
     cap_add:
       - NET_ADMIN
     privileged: true
-    ports:
-      - "443:443"  # Exponer el puerto 443 al exterior
-      - "444:444"  # Exponer el puerto 444 al exterior
-    networks:
-      custom_network:
-        ipv4_address: 172.19.0.2  # IP específica para el contenedor firewall
-    restart: always
 
 networks:
   custom_network:

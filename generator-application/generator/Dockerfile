@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Expone el puerto 8443
-EXPOSE 8443
+#EXPOSE 8080
 
 # Ejecuta la aplicación en el puerto 8443
 ENTRYPOINT ["java", "-jar", "app.jar"]
