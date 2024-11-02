@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response = await axiosInstance.post('/api/login', { email, password });
       localStorage.setItem('token', response.data.token);
       setIsAuthenticated(true);
-      router.push('/dashboard'); // Cambia a la ruta a la que quieras redirigir
+      router.push('/inicio'); // Cambia a la ruta a la que quieras redirigir
     } catch (error) {
       console.error('Error durante el inicio de sesión', error);
     }
