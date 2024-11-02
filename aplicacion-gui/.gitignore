@@ -16,6 +16,8 @@
 # next.js
 /.next/
 /out/
+# Ignorar los archivos generados por Next.js
+.next/
 
 # production
 /build
