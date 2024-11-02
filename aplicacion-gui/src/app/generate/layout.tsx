@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "../styles/globals.css";
 import Header from '../../components/header'; // Importa el Header
 import Footer from '../../components/footer'; // Importa el Footer
+import { AuthProvider } from '@/context/AuthContext'; // Importa el AuthProvider
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -28,10 +29,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', margin: 0 }}>
-        <Header /> {/* Agrega el Header aquí */}
-        <main style={{ flex: 1 }}>{children}</main> {/* Asegúrate de que el main expanda el espacio disponible */}
-        <Footer /> {/* Agrega el Footer aquí */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <AuthProvider> {/* Envuelve el contenido con AuthProvider */}
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );
