@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping("/api/keys")
-@CrossOrigin(origins = "*") // Cambia la URL según tu frontend
+@CrossOrigin(origins = {"http://localhost:80", "http://localhost:3000", "http://localhost"}) // Cambia la URL según tu frontend
 public class KeyController {
     @Autowired
     private KeyService keyService;
