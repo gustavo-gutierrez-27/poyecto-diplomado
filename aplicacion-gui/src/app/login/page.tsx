@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link'; // Importa el componente Link
 import styles from './styles.module.css'; // Importa el archivo CSS Module
+import axiosInstance from '@/axiosConfig';
 
 const LoginPage = () => {
   const [email, setEmail] = useState<string>('');
@@ -19,7 +20,7 @@ const LoginPage = () => {
     setErrorMessage('');
 
     try {
-      const response = await axios.post('http://localhost:8080/api/login', {
+      const response = await axiosInstance.post('/api/login', {
         email,
         password,
       });
@@ -29,7 +30,7 @@ const LoginPage = () => {
         localStorage.setItem('token', response.data.token);
 
         // Redirigir al usuario después del inicio de sesión exitoso
-        router.push('/dashboard'); // Cambia a la ruta a la que quieras redirigir
+        router.push('/inicio'); // Cambia a la ruta a la que quieras redirigir
       }
     } catch (error) {
       setErrorMessage('Correo o contraseña incorrectos');

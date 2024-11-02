@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link'; // Importa el componente Link
 import styles from './styles.module.css'; // Importa el archivo CSS Module
+import axiosInstance from '@/axiosConfig';
 
 const RegisterPage = () => {
   const [name, setName] = useState<string>(''); // Nuevo estado para el nombre
@@ -53,8 +54,7 @@ const RegisterPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8080/api/register', {
-        name, // Incluye el nombre en la solicitud
+      const response = await axiosInstance.post('/api/register', {
         email,
         password,
       });
