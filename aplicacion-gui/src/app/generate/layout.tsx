@@ -28,9 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', margin: 0 }}>
         <Header /> {/* Agrega el Header aquí */}
-        <main>{children}</main>
+        <main style={{ flex: 1 }}>{children}</main> {/* Asegúrate de que el main expanda el espacio disponible */}
         <Footer /> {/* Agrega el Footer aquí */}
       </body>
     </html>

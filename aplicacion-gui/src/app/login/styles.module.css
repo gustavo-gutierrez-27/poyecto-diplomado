@@ -1,0 +1,71 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 20px;
+  max-width: 400px; /* Ancho máximo del formulario */
+  border: 1px solid #ccc; /* Borde del contenedor */
+  border-radius: 8px; /* Esquinas redondeadas */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  background-color: #fff; /* Color de fondo */
+}
+
+.form {
+  width: 100%; /* Asegura que el formulario ocupe todo el ancho del contenedor */
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  margin-bottom: 5px; /* Espacio debajo de las etiquetas */
+  font-weight: bold; /* Negrita para las etiquetas */
+}
+
+.input {
+  padding: 10px; /* Espaciado interno */
+  margin-bottom: 15px; /* Espacio entre campos */
+  border: 1px solid #ccc; /* Borde del input */
+  border-radius: 4px; /* Esquinas redondeadas */
+  outline: none; /* Sin contorno al enfocar */
+  transition: border-color 0.3s; /* Transición suave para el borde */
+}
+
+.input:focus {
+  border-color: #0070f3; /* Cambia el color del borde al enfocar */
+}
+
+.button {
+  padding: 10px 15px; /* Espaciado interno */
+  background-color: #0070f3; /* Color de fondo del botón */
+  color: white; /* Color del texto del botón */
+  border: none; /* Sin borde */
+  border-radius: 4px; /* Esquinas redondeadas */
+  cursor: pointer; /* Cursor de puntero al pasar sobre el botón */
+  transition: background-color 0.3s; /* Transición suave para el fondo */
+}
+
+.button:disabled {
+  background-color: #ccc; /* Color de fondo cuando está deshabilitado */
+  cursor: not-allowed; /* Cursor de no permitido cuando está deshabilitado */
+}
+
+.button:hover:not(:disabled) {
+  background-color: #005bb5; /* Color al pasar el mouse (no deshabilitado) */
+}
+
+.error {
+  color: red; /* Color del mensaje de error */
+  margin-top: 10px; /* Espacio arriba del mensaje de error */
+  font-size: 0.9em; /* Tamaño de fuente más pequeño para el mensaje */
+}
+
+.link {
+  color: #0070f3; /* Color del enlace */
+  text-decoration: none; /* Sin subrayado en el enlace */
+}
+
+.link:hover {
+  text-decoration: underline; /* Subrayado al pasar el mouse */
+}
