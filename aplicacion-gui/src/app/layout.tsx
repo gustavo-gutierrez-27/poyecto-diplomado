@@ -1,17 +1,18 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "../styles/globals.css";
-import Header from '../../components/header'; // Importa el Header
-import Footer from '../../components/footer'; // Importa el Footer
+import "./styles/globals.css";
+import Header from '../components/header'; // Asegúrate de que la ruta sea correcta
+import Footer from '../components/footer'; // Asegúrate de que la ruta sea correcta
+import { AuthProvider } from '../context/AuthContext'; // Ajusta la ruta según tu estructura
 
 const geistSans = localFont({
-  src: "../fonts/GeistVF.woff",
+  src: "/fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 const geistMono = localFont({
-  src: "../fonts/GeistMonoVF.woff",
+  src: "/fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
@@ -29,9 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Header /> {/* Agrega el Header aquí */}
-        <main>{children}</main>
-        <Footer /> {/* Agrega el Footer aquí */}
+        <AuthProvider> {/* Envuelve el contenido en AuthProvider */}
+          <Header /> {/* Agrega el Header aquí */}
+          <main>{children}</main>
+          <Footer /> {/* Agrega el Footer aquí */}
+        </AuthProvider>
       </body>
     </html>
   );

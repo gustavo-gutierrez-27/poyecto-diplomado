@@ -36,9 +36,22 @@ const PrincipalPage = () => {
       return; // No enviar la solicitud si hay un error
     }
 
+    // Obtener el token del localStorage
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    console.error('No se pudo acceder al token');
+    setErrorMessage('No estás autenticado. Por favor, inicia sesión.');
+    return; // No enviar la solicitud si no hay token
+  }
+
+  console.error( "Bearer: " + token)
     try {
       const response = await axiosInstance.post('/api/keys/generate', null, {
         params: { name },
+        headers: {
+          Authorization: `Bearer ${token}`, // Agrega el token en los headers
+        },
       });
 
       const privateKey = response.data;

@@ -1,11 +1,15 @@
 "use client";
 
 import { useState } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link'; // Importa el componente Link
-import styles from './styles.module.css'; // Importa el archivo CSS Module
+import Link from 'next/link';
+import styles from './styles.module.css';
 import axiosInstance from '@/axiosConfig';
+import { AxiosError } from 'axios';
+
+interface ErrorResponse {
+  message: string;
+}
 
 const LoginPage = () => {
   const [email, setEmail] = useState<string>('');
@@ -26,14 +30,12 @@ const LoginPage = () => {
       });
 
       if (response.status === 200) {
-        // Guardar el token en el almacenamiento local (o donde prefieras)
         localStorage.setItem('token', response.data.token);
-
-        // Redirigir al usuario después del inicio de sesión exitoso
-        router.push('/inicio'); // Cambia a la ruta a la que quieras redirigir
+        router.push('/inicio');
       }
     } catch (error) {
-      setErrorMessage('Correo o contraseña incorrectos');
+      const axiosError = error as AxiosError<ErrorResponse>;
+      setErrorMessage(axiosError.response?.data.message || 'Correo o contraseña incorrectos');
     } finally {
       setIsLoading(false);
     }

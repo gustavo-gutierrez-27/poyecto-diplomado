@@ -168,3 +168,7 @@ a {
 a:hover {
   text-decoration: underline; /* Subrayar al pasar el ratón */
 }
+
+.auth-link {
+  cursor: pointer; /* Cambia el cursor a mano al pasar el ratón */
+}

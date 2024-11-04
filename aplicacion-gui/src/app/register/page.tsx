@@ -1,26 +1,23 @@
 "use client";
 
 import { useState } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link'; // Importa el componente Link
-import styles from './styles.module.css'; // Importa el archivo CSS Module
+import Link from 'next/link';
+import styles from './styles.module.css';
 import axiosInstance from '@/axiosConfig';
+import { AxiosError } from 'axios';
+
+interface ErrorResponse {
+  message: string;
+}
 
 const RegisterPage = () => {
-  const [name, setName] = useState<string>(''); // Nuevo estado para el nombre
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
-
-  // Expresión regular para validar que el nombre solo contenga letras y números
-  const validateInput = (value: string): boolean => {
-    const regex = /^[a-zA-Z0-9]+$/; // Permite solo letras y números
-    return regex.test(value);
-  };
 
   const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Expresión regular para validar email
@@ -31,13 +28,6 @@ const RegisterPage = () => {
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage('');
-
-    // Validar el nombre
-    if (!validateInput(name)) {
-      setErrorMessage('Por favor, usa solo letras y números para el nombre.');
-      setIsLoading(false);
-      return;
-    }
 
     // Validar el email
     if (!validateEmail(email)) {
@@ -62,9 +52,12 @@ const RegisterPage = () => {
       if (response.status === 200) {
         // Redirigir al usuario después del registro exitoso
         router.push('/login'); // Cambia a la ruta a la que quieras redirigir
+      } else {
+        setErrorMessage('Error al registrarse. Inténtalo de nuevo.'); // Mensaje para otro código de estado
       }
     } catch (error) {
-      setErrorMessage('Error al registrarse. Inténtalo de nuevo.');
+      const axiosError = error as AxiosError<ErrorResponse>; // Casting a AxiosError
+      setErrorMessage(axiosError.response?.data.message || 'Error al registrarse. Inténtalo de nuevo.');
     } finally {
       setIsLoading(false);
     }
@@ -101,7 +94,6 @@ const RegisterPage = () => {
         <button type="submit" disabled={isLoading} className={styles.button}>
           {isLoading ? 'Registrando...' : 'Registrar'}
         </button>
-        {/* Mantén el espacio reservado para el mensaje de error */}
         <p className={styles.error} style={{ minHeight: '20px' }}>
           {errorMessage}
         </p>
