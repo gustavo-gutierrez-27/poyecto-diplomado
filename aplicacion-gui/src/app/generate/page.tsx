@@ -45,12 +45,11 @@ const PrincipalPage = () => {
     return; // No enviar la solicitud si no hay token
   }
 
-  console.error( "Bearer: " + token)
     try {
       const response = await axiosInstance.post('/api/keys/generate', null, {
         params: { name },
         headers: {
-          Authorization: `Bearer ${token}`, // Agrega el token en los headers
+          Authorization: "Bearer " + token
         },
       });
 

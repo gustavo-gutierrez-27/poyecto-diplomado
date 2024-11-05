@@ -30,7 +30,7 @@ const LoginPage = () => {
       });
 
       if (response.status === 200) {
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('token', response.data);
         router.push('/inicio');
       }
     } catch (error) {
