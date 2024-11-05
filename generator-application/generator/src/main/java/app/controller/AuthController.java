@@ -1,5 +1,6 @@
 package app.controller;
 
+import app.config.SecretKey;
 import app.model.User;
 import app.service.UserService;
 import io.jsonwebtoken.Jwts;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
@@ -32,8 +32,11 @@ public class AuthController {
         return ResponseEntity.ok(newUser);
     }
 
-    // Genera una clave secreta segura
-    private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    // Obtener la instancia única de SecretKey
+    app.config.SecretKey secretKeyInstance = SecretKey.getInstance();
+
+    // Obtener la clave secreta
+    Key SECRET_KEY = secretKeyInstance.getSecretKey();
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user) {
