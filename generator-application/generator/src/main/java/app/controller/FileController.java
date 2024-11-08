@@ -4,6 +4,7 @@ import app.model.File;
 import app.model.User;
 import app.service.FileService;
 import app.service.UserService;
+import app.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,9 @@ import java.util.Map;
 public class FileController {
 
     @Autowired
+    private JwtUtils jwtUtils;  // Servicio para extraer el usuario desde el JWT
+
+    @Autowired
     private FileService fileService;
 
     @Autowired
@@ -28,10 +32,12 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(
             @RequestParam("file") MultipartFile file,
-            @AuthenticationPrincipal User userRequest) {
+            @RequestHeader("Authorization") String authHeader) {
         try {
 
-            User user = userService.findByUsername(userRequest.getUsername());
+            String token = authHeader.replace("Bearer ", "");
+            String username = jwtUtils.extractUsername(token);  // Extraemos el nombre de usuario del JWT
+            User user = userService.findByUsername(username); // Obtener el usuario
 
             File uploadedFile = fileService.uploadFile(file, user);
             return ResponseEntity.ok(uploadedFile);
@@ -42,8 +48,10 @@ public class FileController {
     }
 
     @GetMapping("/available")
-    public ResponseEntity<List<File>> getFilesForSignature(@AuthenticationPrincipal User userRequest) {
-        User user = userService.findByUsername(userRequest.getUsername());
+    public ResponseEntity<List<File>> getFilesForSignature(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String username = jwtUtils.extractUsername(token);  // Extraemos el nombre de usuario del JWT
+        User user = userService.findByUsername(username); // Obtener el usuario
         List<File> files = fileService.getFilesForUser(user);
         return ResponseEntity.ok(files);
     }
@@ -52,9 +60,11 @@ public class FileController {
     public ResponseEntity<?> signFile(
             @PathVariable Long fileId,
             @RequestParam String privateKey,
-            @AuthenticationPrincipal User userRequest) {
+            @RequestHeader("Authorization") String authHeader) {
         try {
-            User user = userService.findByUsername(userRequest.getUsername());
+            String token = authHeader.replace("Bearer ", "");
+            String username = jwtUtils.extractUsername(token);  // Extraemos el nombre de usuario del JWT
+            User user = userService.findByUsername(username); // Obtener el usuario
             // Firma el archivo y valida la firma en el proceso
             File signedFile = fileService.signFile(fileId, privateKey, user);
             return ResponseEntity.ok(signedFile);  // Regresamos el archivo firmado
