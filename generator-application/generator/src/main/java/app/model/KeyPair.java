@@ -7,12 +7,21 @@ public class KeyPair {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column(unique = true)
     private String name;
+
     @Column(columnDefinition = "TEXT")
     private String publicKey;
+
     @Column(columnDefinition = "TEXT")
     private String privateKey;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -43,5 +52,13 @@ public class KeyPair {
 
     public void setPrivateKey(String privateKey) {
         this.privateKey = privateKey;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

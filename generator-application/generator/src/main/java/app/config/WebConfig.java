@@ -17,7 +17,7 @@ public class WebConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost", "http://localhost:80"));// Cambia según tu frontend
+        config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "http://localhost", "http://localhost:*"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setMaxAge(3600L); // Opcional: tiempo en segundos que el navegador debe cachear la configuración de CORS
@@ -25,5 +25,4 @@ public class WebConfig {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
-
 }

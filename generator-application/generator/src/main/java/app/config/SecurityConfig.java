@@ -17,18 +17,18 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.cors().and()  // Habilitar CORS en la configuración de seguridad
+                .csrf().disable()
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/api/register", "/api/login").permitAll()
                                 .anyRequest().authenticated() // Requiere autenticación para cualquier otra solicitud
                 )
-                .formLogin(withDefaults()) // Opción de login basado en formularios
-                .logout(logout -> logout.permitAll()) // Permitir logout para todos
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // Agregar el filtro antes del UsernamePasswordAuthenticationFilter
+                .formLogin(withDefaults())
+                .logout(logout -> logout.permitAll())
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

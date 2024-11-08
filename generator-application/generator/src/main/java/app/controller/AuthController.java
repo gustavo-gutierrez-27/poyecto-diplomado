@@ -25,18 +25,16 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    private SecretKey secretKeyInstance = SecretKey.getInstance();
+
+
+    private final Key SECRET_KEY = secretKeyInstance.getSecretKey();
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
         User newUser = userService.registerUser(user);
         return ResponseEntity.ok(newUser);
     }
-
-    // Obtener la instancia única de SecretKey
-    app.config.SecretKey secretKeyInstance = SecretKey.getInstance();
-
-    // Obtener la clave secreta
-    Key SECRET_KEY = secretKeyInstance.getSecretKey();
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user) {
