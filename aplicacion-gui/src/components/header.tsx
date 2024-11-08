@@ -25,7 +25,10 @@ const Header = () => {
         <ul style={styles.navList}>
           <li><a href="/inicio">Inicio</a></li>
           {isAuthenticated && ( // Solo renderiza este enlace si el usuario está autenticado
-            <li><a href="/generate">Generar Llave</a></li>
+            <>
+              <li><a href="/generate">Generar Llave</a></li>
+              <li><a href="/archivos">Gestión de Archivos</a></li> {/* Agregar la opción de gestión de archivos */}
+            </>
           )}
           <li>
             <a onClick={handleAuthAction} className="auth-link">

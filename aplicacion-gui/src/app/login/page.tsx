@@ -25,7 +25,7 @@ const LoginPage = () => {
 
     try {
       const response = await axiosInstance.post('/api/login', {
-        email,
+        username: email,
         password,
       });
 

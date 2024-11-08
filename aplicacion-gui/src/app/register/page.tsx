@@ -45,7 +45,7 @@ const RegisterPage = () => {
 
     try {
       const response = await axiosInstance.post('/api/register', {
-        email,
+        username: email,
         password,
       });
 
