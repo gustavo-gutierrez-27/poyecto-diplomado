@@ -20,6 +20,14 @@ public class FileDto implements Serializable {
         this.valid = valid;
     }
 
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
     public Long getId() {
         return id;
     }
