@@ -57,7 +57,7 @@ public class FileController {
         List<File> files = fileService.getFilesForUser(user);
         List<FileDto> filesDto = new ArrayList<>();
         for (File file : files) {
-            filesDto.add(new FileDto(file.getFileName(),file.getFileSignature()));
+            filesDto.add(new FileDto(file.getId(),file.getFileName(),file.getFileSignature()));
         }
 
         return ResponseEntity.ok(filesDto);

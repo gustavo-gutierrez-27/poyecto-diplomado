@@ -7,13 +7,23 @@ import java.io.Serializable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FileDto implements Serializable {
+    private Long id;
     private String name;
     private String signed;
 
     // Constructor
-    public FileDto(String name, String fileSignature) {
+    public FileDto(Long id,String name, String fileSignature) {
+        this.id = id;
         this.name = name;
         this.signed = (fileSignature != null && !fileSignature.isEmpty()) ? "firmado" : "no firmado";
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
