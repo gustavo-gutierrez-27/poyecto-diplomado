@@ -16,8 +16,10 @@ public class File {
     @Lob
     private byte[] fileData;
 
+    @Column(columnDefinition = "TEXT")
     private String fileHash;
 
+    @Column(columnDefinition = "TEXT")
     private String fileSignature;
 
     @ManyToOne
