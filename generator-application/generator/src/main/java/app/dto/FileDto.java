@@ -1,14 +1,16 @@
 package app.dto;
 
-public class FileDto {
+
+import java.io.Serializable;
+
+public class FileDto implements Serializable {
     private String name;
     private String signed;
 
-    public FileDto(String name, String sign){
-        this.name= name;
-        if (sign == null){
-            this.signed = "No firmado";
-        }else this.signed = "Firmado";
+    // Constructor
+    public FileDto(String name, String fileSignature) {
+        this.name = name;
+        this.signed = (fileSignature != null && !fileSignature.isEmpty()) ? "firmado" : "no firmado";
     }
 
 }
