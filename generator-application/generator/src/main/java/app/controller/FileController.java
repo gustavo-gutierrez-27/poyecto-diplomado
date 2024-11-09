@@ -13,10 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/files")
@@ -56,8 +53,14 @@ public class FileController {
         User user = userService.findByUsername(username); // Obtener el usuario
         List<File> files = fileService.getFilesForUser(user);
         List<FileDto> filesDto = new ArrayList<>();
+        boolean isValidSigned;
         for (File file : files) {
-            filesDto.add(new FileDto(file.getId(),file.getFileName(),file.getFileSignature()));
+            try {
+                isValidSigned = fileService.verifyFileSignature(file.getId(),user);
+            } catch (Exception e) {
+                isValidSigned = false;
+            }
+            filesDto.add(new FileDto(file.getId(),file.getFileName(),file.getFileSignature(),isValidSigned));
         }
 
         return ResponseEntity.ok(filesDto);
@@ -77,6 +80,19 @@ public class FileController {
             return ResponseEntity.ok(signedFile);  // Regresamos el archivo firmado
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al firmar el archivo: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{fileId}/verify")
+    public ResponseEntity<?> verifyFileSignature(@PathVariable Long fileId,
+                                                 @RequestParam String privateKey,
+                                                 @AuthenticationPrincipal User user) {
+        try {
+            boolean isValid = fileService.verifyFileSignature(fileId, user);
+            return ResponseEntity.ok(Collections.singletonMap("isValid", isValid));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
 }

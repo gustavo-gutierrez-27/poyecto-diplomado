@@ -10,12 +10,14 @@ public class FileDto implements Serializable {
     private Long id;
     private String name;
     private String signed;
+    private boolean valid;
 
     // Constructor
-    public FileDto(Long id,String name, String fileSignature) {
+    public FileDto(Long id,String name, String fileSignature, boolean valid) {
         this.id = id;
         this.name = name;
         this.signed = (fileSignature != null && !fileSignature.isEmpty()) ? "firmado" : "no firmado";
+        this.valid = valid;
     }
 
     public Long getId() {

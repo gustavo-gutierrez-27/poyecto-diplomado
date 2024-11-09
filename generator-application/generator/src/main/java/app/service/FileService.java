@@ -62,15 +62,11 @@ public class FileService {
         // Verificar la firma generada inmediatamente después de firmar
         //boolean isValid = verifyFileSignature(fileId, user);
 
-        // Si la firma no es válida, lanzamos una excepción
-        //if (!isValid) {
-        //    throw new IllegalStateException("La firma generada no es válida.");
-        //}
 
         return fileRepository.save(file);
     }
 
-    /*
+
     public boolean verifyFileSignature(Long fileId, User user) throws Exception {
         File file = fileRepository.findByIdAndUser(fileId, user).orElseThrow(() -> new IllegalArgumentException("Archivo no encontrado"));
 
@@ -80,7 +76,7 @@ public class FileService {
 
         // Verificar la firma con la clave pública
         Signature signature = Signature.getInstance("SHA256withRSA");
-        PublicKey publicKey = KeyPairUtil.getPublicKeyFromString(user.getKeyPair().getPublicKey());
+        PublicKey publicKey = KeyPairUtil.getPublicKeyFromString(user.getKeyPairs().get(0).getPublicKey());
         signature.initVerify(publicKey);
         signature.update(file.getFileData());
 
@@ -88,5 +84,5 @@ public class FileService {
         return signature.verify(digitalSignature);
     }
 
-     */
+
 }
