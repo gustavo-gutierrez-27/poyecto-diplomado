@@ -50,7 +50,7 @@ public class FileController {
     }
 
     @GetMapping("/available")
-    public ResponseEntity<List<File>> getFilesForSignature(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<List<FileDto>> getFilesForSignature(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         String username = jwtUtils.extractUsername(token);  // Extraemos el nombre de usuario del JWT
         User user = userService.findByUsername(username); // Obtener el usuario
