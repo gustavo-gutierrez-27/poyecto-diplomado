@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.*;
 import java.util.Base64;
 import java.util.List;
@@ -41,14 +42,19 @@ public class FileService {
         return fileRepository.findByUserId(user.getId());
     }
 
-    public File signFile(Long fileId, String privateKey, User user) throws Exception {
+    public File signFile(Long fileId, MultipartFile privateKeyFile, User user) throws Exception {
         File file = fileRepository.findByIdAndUser(fileId, user)
                 .orElseThrow(() -> new IllegalArgumentException("Archivo no encontrado"));
 
+
+        // Leer la clave privada desde el archivo
+        PrivateKey privateKey;
+        try (InputStream privateKeyInputStream = privateKeyFile.getInputStream()) {
+            privateKey = KeyPairUtil.getPrivateKeyFromInputStream(privateKeyInputStream);
+        }
         // Generar la firma con la clave privada
         Signature signature = Signature.getInstance("SHA256withRSA");
-        PrivateKey key = KeyPairUtil.getPrivateKeyFromString(privateKey);
-        signature.initSign(key);
+        signature.initSign(privateKey);
         signature.update(file.getFileData());
         byte[] digitalSignature = signature.sign();
         file.setFileSignature(Base64.getEncoder().encodeToString(digitalSignature));

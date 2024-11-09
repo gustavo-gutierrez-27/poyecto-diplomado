@@ -66,7 +66,7 @@ public class FileController {
     @PostMapping("/{fileId}/sign")
     public ResponseEntity<?> signFile(
             @PathVariable Long fileId,
-            @RequestParam String privateKey,
+            @RequestParam("privateKey") MultipartFile privateKey,
             @RequestHeader("Authorization") String authHeader) {
         try {
             String token = authHeader.replace("Bearer ", "");
