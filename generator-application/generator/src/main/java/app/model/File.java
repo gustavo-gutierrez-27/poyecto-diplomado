@@ -78,4 +78,6 @@ public class File {
     public String getFileDataAsBase64() {
         return Base64.getEncoder().encodeToString(this.fileData);
     }
+
+
 }

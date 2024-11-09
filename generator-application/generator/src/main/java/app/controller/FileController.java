@@ -1,5 +1,6 @@
 package app.controller;
 
+import app.dto.FileDto;
 import app.model.File;
 import app.model.User;
 import app.service.FileService;
@@ -12,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +55,12 @@ public class FileController {
         String username = jwtUtils.extractUsername(token);  // Extraemos el nombre de usuario del JWT
         User user = userService.findByUsername(username); // Obtener el usuario
         List<File> files = fileService.getFilesForUser(user);
-        return ResponseEntity.ok(files);
+        List<FileDto> filesDto = new ArrayList<>();
+        for (File file : files) {
+            filesDto.add(new FileDto(file.getFileName(),file.getFileSignature()));
+        }
+
+        return ResponseEntity.ok(filesDto);
     }
 
     @PostMapping("/{fileId}/sign")
