@@ -24,6 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class AuthController {
+    /*
 
     private static final String CLIENT_ID = "877884754903-ad606p0qhcroc4nnnuq1ie55isbkt21o.apps.googleusercontent.com";
     private static final String CLIENT_SECRET = "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";
@@ -141,4 +142,5 @@ public class AuthController {
         TokenBlacklist.revokeToken(token);
         return ResponseEntity.ok("ok");
     }
+    */
 }
