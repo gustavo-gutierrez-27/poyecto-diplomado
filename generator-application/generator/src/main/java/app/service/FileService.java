@@ -120,7 +120,7 @@ public class FileService {
     // Método para compartir un archivo con otro usuario
     public File shareFileWithUser(Long fileId, Long userIdToShareWith, User owner) {
         // Buscar el archivo y verificar que pertenece al usuario actual
-        File file = fileRepository.findByIdAndUser(fileId, owner)
+        File file = fileRepository.findByIdAndOwner(fileId, owner)
                 .orElseThrow(() -> new IllegalArgumentException("Archivo no encontrado o no autorizado para compartir."));
 
         // Obtener el usuario con el cual se compartirá el archivo
