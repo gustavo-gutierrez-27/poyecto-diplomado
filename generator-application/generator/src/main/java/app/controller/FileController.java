@@ -61,6 +61,25 @@ public class FileController {
                     .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
+
+    @GetMapping("/shared")
+    public ResponseEntity<?> getSharedFiles(@RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.replace("Bearer ", "");
+            String username = jwtUtils.extractUsername(token);
+            User user = userService.findByUsername(username);
+
+            List<FileDto> files = fileService.getSharedFiles(user);
+
+            return ResponseEntity.ok(files);
+        } catch (Exception e) {
+            // En caso de error, retornar un mensaje con el error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", e.getMessage()));
+        }
+    }
+
+
     // Endpoint para compartir un archivo con otro usuario
     @PostMapping("/{fileId}/share")
     public ResponseEntity<?> shareFileWithUser(

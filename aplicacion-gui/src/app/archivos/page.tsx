@@ -190,7 +190,7 @@ const FileManagerPage = () => {
                 <td>{file.name}</td>
                 <td>
                   {/* Mostrar todas las firmas */}
-                  {file.signatures.length > 0 ? (
+                  {(file.signatures && file.signatures.length > 0) ? (
                     file.signatures.map((signature, index) => (
                       <div key={index} className={styles.signature}>
                         {signature.user} {signature.valid ? '✔️' : '❌'}
@@ -204,9 +204,9 @@ const FileManagerPage = () => {
                   <button
                     className={`${styles.button} ${fileId === file.id ? styles.selectedButton : ''}`}  // Cambiar estilo del botón seleccionado
                     onClick={() => handleSelectFileFromTable(file)}  // Al hacer clic, seleccionamos el archivo
-                    disabled={file.signatures.length > 0}  // Deshabilitar el botón si el archivo está firmado
+                    disabled={false}  // Ahora siempre está habilitado, no importa si tiene firmas o no
                   >
-                    {file.signatures.length > 0 ? 'Firmado' : 'Seleccionar'}
+                    {file.signatures && file.signatures.length > 0 ? 'Firmado' : 'Seleccionar'}
                   </button>
                 </td>
               </tr>
@@ -274,6 +274,7 @@ const FileManagerPage = () => {
         {fileSelectionError && <p className={styles.error}>{fileSelectionError}</p>}
       </div>
     </ProtectedRoute>
+
   );
 };
 
