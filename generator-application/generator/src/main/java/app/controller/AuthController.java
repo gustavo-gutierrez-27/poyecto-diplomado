@@ -26,4 +26,41 @@ import java.util.Map;
 public class AuthController {
 
 
+
+    private final SecretKey secretKeyInstance = SecretKey.getInstance();
+    private final Key SECRET_KEY = secretKeyInstance.getSecretKey();
+
+    @Autowired
+    private UserService userService;
+
+
+
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody User user) {
+        User newUser = userService.registerUser(user);
+        return ResponseEntity.ok(newUser);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody User user) {
+        User foundUser = userService.findByUsername(user.getUsername());
+        if (foundUser != null && userService.getPasswordEncoder().matches(user.getPassword(), foundUser.getPassword())) {
+            String token = Jwts.builder()
+                    .setSubject(foundUser.getUsername())
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 día
+                    .signWith(SECRET_KEY) // Usa la clave generada
+                    .compact();
+            return ResponseEntity.ok(token);
+        }
+        return ResponseEntity.status(401).body("Credenciales inválidas");
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        TokenBlacklist.revokeToken(token);
+        return ResponseEntity.ok("ok");
+    }
+
 }
