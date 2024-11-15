@@ -27,7 +27,8 @@ const Header = () => {
           {isAuthenticated && ( // Solo renderiza este enlace si el usuario está autenticado
             <>
               <li><a href="/generate">Generar Llave</a></li>
-              <li><a href="/archivos">Gestión de Archivos</a></li> {/* Agregar la opción de gestión de archivos */}
+              <li><a href="/archivos">Gestión de Archivos</a></li>
+              <li><a href="/archivos-compartidos">Archivos Compartidos</a></li>
             </>
           )}
           <li>

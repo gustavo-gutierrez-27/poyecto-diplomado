@@ -136,3 +136,35 @@
   color: #333;
   margin-bottom: 20px;
 }
+
+/* Estilo para la fila seleccionada */
+.selectedRow {
+  background-color: #e0f7fa; /* Un color suave para resaltar la fila */
+}
+
+/* Estilo para el botón seleccionado */
+.selectedButton {
+  background-color: #007bff; /* Botón azul para indicar selección */
+  color: white;
+}
+
+/* Estilo para el botón deshabilitado */
+.buttonDisabled {
+  background-color: #d3d3d3;
+  cursor: not-allowed;
+}
+
+/* Estilo para los botones en general */
+.button {
+  padding: 8px 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.button:hover:not(.buttonDisabled) {
+  background-color: #0056b3;
+}
+

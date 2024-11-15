@@ -1,0 +1,193 @@
+/* Contenedor principal de la página */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra todo el contenido horizontalmente */
+    justify-content: center;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Título principal de la página */
+.title {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Estilo para los botones y formularios */
+.fileButtons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Alinea todo el formulario en el centro */
+    gap: 20px; /* Asegura que haya un espacio entre los elementos */
+}
+
+/* Formulario de carga de archivos */
+.form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra los elementos en la forma */
+    gap: 30px; /* Aumenta el espacio entre los campos */
+}
+
+/* Estilo para los campos de entrada (input) */
+.input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.3s;
+    font-size: 1em;
+    width: 100%; /* Asegura que el campo de entrada ocupe el espacio disponible */
+    text-align: center; /* Centra el texto dentro del input */
+}
+
+/* Etiquetas de los inputs */
+.inputLabel {
+    font-size: 1em;
+    margin-bottom: 5px;
+    text-align: center; /* Centra las etiquetas de los campos */
+}
+
+/* Estilo de los botones */
+.button {
+    padding: 12px 20px;
+    background-color: #0070f3;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    width: 100%; /* Hacemos que los botones ocupen todo el ancho disponible */
+}
+
+.buttonDisabled {
+    padding: 12px 20px;
+    background-color: #ccc;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: not-allowed;
+    font-size: 1em;
+    width: 100%; /* Asegura que el botón "Cargar Archivos" tenga el mismo tamaño */
+}
+
+.button:hover {
+    background-color: #005bb5;
+}
+
+/* Separación entre los botones */
+.fileInputWrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Asegura que ocupe el mismo ancho que los campos */
+    gap: 20px; /* Espacio entre el campo de entrada y su botón */
+    align-items: center; /* Centra los campos de selección y botones */
+}
+
+/* Asegura espacio entre los campos de selección de archivo y clave secreta */
+.fileInputWrapper input {
+    margin-bottom: 20px; /* Añade un margen abajo para separar los campos */
+}
+
+/* Estilo para el mensaje de error */
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 10px;
+    text-align: center; /* Centra el mensaje de error */
+}
+
+/* Estilo de la tabla */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+}
+
+.table th,
+.table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+.table th {
+    background-color: #f4f4f4;
+    color: #333;
+    font-weight: bold;
+}
+
+.table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.tableTitle {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Estilo para la fila seleccionada */
+.selectedRow {
+    background-color: #e0f7fa; /* Un color suave para resaltar la fila */
+}
+
+/* Estilo para el botón seleccionado */
+.selectedButton {
+    background-color: #007bff; /* Botón azul para indicar selección */
+    color: white;
+}
+
+/* Estilo para el botón deshabilitado */
+.buttonDisabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+}
+
+/* Estilo para los botones en general */
+.button {
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.button:hover:not(.buttonDisabled) {
+    background-color: #0056b3;
+}
+
+/* Estilo para las firmas de los usuarios en la tabla */
+.table ul {
+    list-style-type: none;  /* Elimina los puntos de la lista */
+    padding: 0;
+    margin: 0;
+}
+
+.table li {
+    font-size: 1em;
+    margin-bottom: 5px;
+}
+
+.table li strong {
+    color: #0070f3;  /* Resalta el nombre de la firma */
+}
+
+.table li.valid {
+    color: #4caf50;  /* Verde para firmas válidas */
+}
+
+.table li.invalid {
+    color: #f44336;  /* Rojo para firmas inválidas */
+}

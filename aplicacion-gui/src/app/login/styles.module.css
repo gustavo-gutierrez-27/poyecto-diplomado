@@ -1,3 +1,4 @@
+/* Contenedor principal del formulario */
 .container {
   display: flex;
   flex-direction: column;
@@ -12,17 +13,20 @@
   background-color: #fff; /* Color de fondo */
 }
 
+/* Formulario */
 .form {
   width: 100%; /* Asegura que el formulario ocupe todo el ancho del contenedor */
   display: flex;
   flex-direction: column;
 }
 
+/* Etiquetas */
 .label {
   margin-bottom: 5px; /* Espacio debajo de las etiquetas */
   font-weight: bold; /* Negrita para las etiquetas */
 }
 
+/* Estilo de los campos de entrada */
 .input {
   padding: 10px; /* Espaciado interno */
   margin-bottom: 15px; /* Espacio entre campos */
@@ -36,6 +40,7 @@
   border-color: #0070f3; /* Cambia el color del borde al enfocar */
 }
 
+/* Estilo de los botones */
 .button {
   padding: 10px 15px; /* Espaciado interno */
   background-color: #0070f3; /* Color de fondo del botón */
@@ -46,21 +51,25 @@
   transition: background-color 0.3s; /* Transición suave para el fondo */
 }
 
+/* Botón deshabilitado */
 .button:disabled {
   background-color: #ccc; /* Color de fondo cuando está deshabilitado */
   cursor: not-allowed; /* Cursor de no permitido cuando está deshabilitado */
 }
 
+/* Efecto hover en el botón */
 .button:hover:not(:disabled) {
   background-color: #005bb5; /* Color al pasar el mouse (no deshabilitado) */
 }
 
+/* Estilo para mensajes de error */
 .error {
   color: red; /* Color del mensaje de error */
   margin-top: 10px; /* Espacio arriba del mensaje de error */
   font-size: 0.9em; /* Tamaño de fuente más pequeño para el mensaje */
 }
 
+/* Estilo para los enlaces */
 .link {
   color: #0070f3; /* Color del enlace */
   text-decoration: none; /* Sin subrayado en el enlace */
@@ -69,3 +78,61 @@
 .link:hover {
   text-decoration: underline; /* Subrayado al pasar el mouse */
 }
+
+/* Botón de Google */
+.googleButton {
+  background-color: white;
+  color: #000;
+  border: 2px solid #ddd;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex; /* Usamos Flexbox para alinear el contenido */
+  align-items: center; /* Centra el contenido verticalmente */
+  gap: 10px; /* Espacio entre la imagen y el texto */
+  transition: all 0.3s ease;
+}
+
+/* Estilo de la imagen del logo de Google */
+.googleLogo {
+  width: 18px; /* Ajusta el tamaño de la imagen (más pequeña) */
+  height: auto; /* Mantiene la relación de aspecto */
+}
+
+/* Efecto hover en el botón de Google */
+.googleButton:hover {
+  background-color: #f7f7f7;
+  border-color: #ccc;
+}
+
+/* Estilo cuando el botón de Google está deshabilitado */
+.googleButton:disabled {
+  background-color: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #ddd;
+}
+
+/* Spinner de carga */
+.spinner {
+  border: 2px solid transparent;
+  border-top: 2px solid #3498db; /* Color del spinner */
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite; /* Animación para girar */
+  margin: 0 auto; /* Centra el spinner */
+}
+
+/* Animación de rotación del spinner */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+

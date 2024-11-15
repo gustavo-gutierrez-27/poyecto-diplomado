@@ -11,11 +11,11 @@
       "static/chunks/main-app.js",
       "static/chunks/app/inicio/page.js"
     ],
-    "/archivos/page": [
+    "/archivos-compartidos/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/archivos/page.css",
-      "static/chunks/app/archivos/page.js"
+      "static/css/app/archivos-compartidos/page.css",
+      "static/chunks/app/archivos-compartidos/page.js"
     ]
   }
 }
