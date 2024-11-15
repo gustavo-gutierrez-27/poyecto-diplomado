@@ -25,15 +25,94 @@ import java.util.Map;
 @RequestMapping("/api")
 public class AuthController {
 
-
+    private static final String CLIENT_ID = "877884754903-ad606p0qhcroc4nnnuq1ie55isbkt21o.apps.googleusercontent.com";
+    private static final String CLIENT_SECRET = "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";
+    private static final String REDIRECT_URI = "http://localhost:8080/api/google/callback";
+    private static final String TOKEN_URI = "https://oauth2.googleapis.com/token";
+    private static final String USER_INFO_URI = "https://www.googleapis.com/oauth2/v3/userinfo";
 
     private final SecretKey secretKeyInstance = SecretKey.getInstance();
     private final Key SECRET_KEY = secretKeyInstance.getSecretKey();
 
+    RestTemplate restTemplate = new RestTemplate();
+
+
     @Autowired
     private UserService userService;
 
+    @GetMapping("/google/login")
+    public void redirectToGoogleLogin(HttpServletResponse response) throws IOException {
+        String googleLoginUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
+                "?client_id=" + CLIENT_ID +
+                "&redirect_uri=" + REDIRECT_URI +
+                "&response_type=code" +
+                "&scope=email profile";
+        response.sendRedirect(googleLoginUrl);
+    }
 
+    @GetMapping("/google/callback")
+    public ResponseEntity<String> googleCallback(@RequestParam("code") String code) {
+        try {
+            // Intercambiar el código de autorización por un token de acceso
+            String accessToken = getAccessTokenFromGoogle(code);
+
+            // Obtener la información del usuario de Google
+            Map<String, Object> userInfo = getUserInfoFromGoogle(accessToken);
+            String email = (String) userInfo.get("email");
+
+            // Generar un JWT propio para la aplicación
+            String jwtToken = Jwts.builder()
+                    .setSubject(email)
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 día
+                    .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
+                    .compact();
+
+            return ResponseEntity.ok(jwtToken);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la autenticación con Google");
+        }
+    }
+
+    private String getAccessTokenFromGoogle(String code) throws IOException {
+        // Crear los parámetros de la solicitud
+        Map<String, String> params = new HashMap<>();
+        params.put("client_id", CLIENT_ID);
+        params.put("client_secret", CLIENT_SECRET);
+        params.put("code", code);
+        params.put("redirect_uri", REDIRECT_URI);
+        params.put("grant_type", "authorization_code");
+
+        // Crear la solicitud HTTP
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<Map<String, String>> entity = new HttpEntity<>(params, headers);
+
+        // Enviar la solicitud POST a TOKEN_URI
+        ResponseEntity<Map> response = restTemplate.exchange(TOKEN_URI, HttpMethod.POST, entity, Map.class);
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+            return (String) response.getBody().get("access_token");
+        } else {
+            throw new IOException("Error al obtener el token de acceso de Google");
+        }
+    }
+
+    private Map<String, Object> getUserInfoFromGoogle(String accessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(USER_INFO_URI, HttpMethod.GET, entity, Map.class);
+
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+            return response.getBody();
+        } else {
+            throw new RuntimeException("Error al obtener la información del usuario de Google");
+        }
+    }
 
 
     @PostMapping("/register")
