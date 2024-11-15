@@ -1,9 +1,13 @@
 package app.service;
 
+import app.dto.FileDto;
 import app.model.File;
+import app.model.FileSignature;
 import app.model.User;
 import app.repository.FileRepository;
+import app.repository.FileSignatureRepository;
 import app.repository.KeyRepository;
+import app.repository.UserRespository;
 import app.utils.KeyPairUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,8 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.*;
-import java.util.Base64;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class FileService {
@@ -24,11 +28,17 @@ public class FileService {
     @Autowired
     private KeyRepository keyPairRepository;
 
-    public File uploadFile(MultipartFile file, User user) throws NoSuchAlgorithmException, IOException {
+    @Autowired
+    private UserRespository userRespository;
+
+    @Autowired
+    private FileSignatureRepository fileSignatureRepository;
+
+    public File uploadFile(MultipartFile file, User owner) throws NoSuchAlgorithmException, IOException {
         File newFile = new File();
         newFile.setFileName(file.getOriginalFilename());
         newFile.setFileData(file.getBytes());
-        newFile.setUser(user);
+        newFile.setOwner(owner);
 
         // Calcular el hash del archivo
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -39,40 +49,43 @@ public class FileService {
     }
 
     public List<File> getFilesForUser(User user) {
-        return fileRepository.findByUserId(user.getId());
+        return fileRepository.findByOwnerId(user.getId());
     }
 
-    public File signFile(Long fileId, MultipartFile privateKeyFile, User user) throws Exception {
-        File file = fileRepository.findByIdAndUser(fileId, user)
+    public FileSignature signFile(Long fileId, MultipartFile privateKeyFile, User user) throws Exception {
+        File file = fileRepository.findById(fileId)
                 .orElseThrow(() -> new IllegalArgumentException("Archivo no encontrado"));
-
 
         // Leer la clave privada desde el archivo
         PrivateKey privateKey;
         try (InputStream privateKeyInputStream = privateKeyFile.getInputStream()) {
             privateKey = KeyPairUtil.getPrivateKeyFromInputStream(privateKeyInputStream);
         }
+
         // Generar la firma con la clave privada
         Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initSign(privateKey);
         signature.update(file.getFileData());
         byte[] digitalSignature = signature.sign();
-        file.setFileSignature(Base64.getEncoder().encodeToString(digitalSignature));
 
-        // Verificar la firma generada inmediatamente después de firmar
-        //boolean isValid = verifyFileSignature(fileId, user);
+        // Crear una nueva instancia de FileSignature
+        FileSignature fileSignature = new FileSignature();
+        fileSignature.setFile(file);
+        fileSignature.setUser(user);
+        fileSignature.setSignature(Base64.getEncoder().encodeToString(digitalSignature));
+        fileSignature.setSignedAt(LocalDateTime.now());
 
-
-        return fileRepository.save(file);
+        // Guardar la firma en la base de datos
+        return fileSignatureRepository.save(fileSignature);
     }
 
-
     public boolean verifyFileSignature(Long fileId, User user) throws Exception {
-        File file = fileRepository.findByIdAndUser(fileId, user).orElseThrow(() -> new IllegalArgumentException("Archivo no encontrado"));
+        File file = fileRepository.findById(fileId)
+                .orElseThrow(() -> new IllegalArgumentException("Archivo no encontrado"));
 
-        if (file.getFileSignature() == null) {
-            throw new IllegalStateException("El archivo no tiene una firma asociada");
-        }
+        // Obtener la firma correspondiente al usuario
+        FileSignature fileSignature = fileSignatureRepository.findByFileAndUser(file, user)
+                .orElseThrow(() -> new IllegalStateException("El archivo no tiene una firma asociada para este usuario"));
 
         // Verificar la firma con la clave pública
         Signature signature = Signature.getInstance("SHA256withRSA");
@@ -80,9 +93,73 @@ public class FileService {
         signature.initVerify(publicKey);
         signature.update(file.getFileData());
 
-        byte[] digitalSignature = Base64.getDecoder().decode(file.getFileSignature());
+        byte[] digitalSignature = Base64.getDecoder().decode(fileSignature.getSignature());
         return signature.verify(digitalSignature);
     }
+    public List<FileDto> getAvailableFilesWithSignatures(User user) {
+        List<FileDto> fileDtos = new ArrayList<>();
 
+        // Archivos propios
+        List<File> userFiles = fileRepository.findByOwnerId(user.getId());
 
+        // Archivos compartidos
+        List<File> sharedFiles = fileRepository.findFilesSharedWithUser(user.getId());
+
+        for (File file : userFiles) {
+            FileDto fileDto = buildFileDto(file);
+            fileDtos.add(fileDto);
+        }
+
+        for (File file : sharedFiles) {
+            FileDto fileDto = buildFileDto(file);
+            fileDtos.add(fileDto);
+        }
+
+        return fileDtos;
+    }
+    // Método para compartir un archivo con otro usuario
+    public File shareFileWithUser(Long fileId, Long userIdToShareWith, User owner) {
+        // Buscar el archivo y verificar que pertenece al usuario actual
+        File file = fileRepository.findByIdAndUser(fileId, owner)
+                .orElseThrow(() -> new IllegalArgumentException("Archivo no encontrado o no autorizado para compartir."));
+
+        // Obtener el usuario con el cual se compartirá el archivo
+        User userToShareWith = userRespository.findById(userIdToShareWith)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
+
+        // Agregar el usuario a la lista de usuarios con los que está compartido
+        file.addSharedUser(userToShareWith);
+
+        // Guardar el archivo con la actualización
+        return fileRepository.save(file);
+    }
+
+    private FileDto buildFileDto(File file) {
+        List<Map<String, Object>> signaturesInfo = new ArrayList<>();
+
+        for (FileSignature fileSignature : file.getSignatures()) {
+            Map<String, Object> signatureInfo = new HashMap<>();
+            signatureInfo.put("user", fileSignature.getUser().getUsername());
+            signatureInfo.put("valid", verifySignature(file, fileSignature)); // Método para verificar la validez
+            signaturesInfo.add(signatureInfo);
+        }
+
+        return new FileDto(
+                file.getId(),
+                file.getFileName(),
+                signaturesInfo
+        );
+    }
+
+    private boolean verifySignature(File file, FileSignature fileSignature) {
+        try {
+            return KeyPairUtil.verifySignature(
+                    file.getFileData(),
+                    fileSignature.getSignature(),
+                    fileSignature.getUser().getKeyPairs().get(0).getPublicKey()  // Suponiendo que tienes la clave pública del usuario en `User`
+            );
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

@@ -1,10 +1,14 @@
 package app.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Base64;
+import java.util.*;
 
 @Entity
+@Getter
+@Setter
 public class File {
 
     @Id
@@ -19,62 +23,45 @@ public class File {
     @Column(columnDefinition = "TEXT")
     private String fileHash;
 
-    @Column(columnDefinition = "TEXT")
-    private String fileSignature;
+    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FileSignature> signatures = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User owner;
+
+    @ManyToMany
+    @JoinTable(
+            name = "file_shared_users",
+            joinColumns = @JoinColumn(name = "file_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> sharedWithUsers = new HashSet<>();
 
     // Getters y setters
-
-    public Long getId() {
-        return id;
+    public Set<User> getSharedWithUsers() {
+        return sharedWithUsers;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setSharedWithUsers(Set<User> sharedWithUsers) {
+        this.sharedWithUsers = sharedWithUsers;
     }
 
-    public String getFileName() {
-        return fileName;
+    public void addSharedUser(User user) {
+        sharedWithUsers.add(user);
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void removeSharedUser(User user) {
+        sharedWithUsers.remove(user);
     }
 
-    public byte[] getFileData() {
-        return fileData;
+
+    public void addSignature(FileSignature signature) {
+        signature.setFile(this);
+        this.signatures.add(signature);
     }
 
-    public void setFileData(byte[] fileData) {
-        this.fileData = fileData;
-    }
 
-    public String getFileHash() {
-        return fileHash;
-    }
-
-    public void setFileHash(String fileHash) {
-        this.fileHash = fileHash;
-    }
-
-    public String getFileSignature() {
-        return fileSignature;
-    }
-
-    public void setFileSignature(String fileSignature) {
-        this.fileSignature = fileSignature;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     // Método para representar el archivo como base64, útil para la comunicación con el frontend
     public String getFileDataAsBase64() {

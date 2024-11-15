@@ -56,6 +56,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean validateToken(String token) {
+        if (TokenBlacklist.isTokenRevoked(token)){
+            return false;
+        }
         try {
             Jwts.parserBuilder()
                     .setSigningKey(SECRET_KEY)

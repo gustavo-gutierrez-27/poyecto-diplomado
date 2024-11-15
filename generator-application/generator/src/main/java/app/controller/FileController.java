@@ -2,6 +2,7 @@ package app.controller;
 
 import app.dto.FileDto;
 import app.model.File;
+import app.model.FileSignature;
 import app.model.User;
 import app.service.FileService;
 import app.service.UserService;
@@ -33,12 +34,11 @@ public class FileController {
             @RequestParam("file") MultipartFile file,
             @RequestHeader("Authorization") String authHeader) {
         try {
-
             String token = authHeader.replace("Bearer ", "");
             String username = jwtUtils.extractUsername(token);  // Extraemos el nombre de usuario del JWT
-            User user = userService.findByUsername(username); // Obtener el usuario
+            User owner = userService.findByUsername(username); // Obtener el usuario propietario
 
-            File uploadedFile = fileService.uploadFile(file, user);
+            File uploadedFile = fileService.uploadFile(file, owner);  // Cambia 'user' a 'owner'
             return ResponseEntity.ok(uploadedFile);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -47,24 +47,40 @@ public class FileController {
     }
 
     @GetMapping("/available")
-    public ResponseEntity<List<FileDto>> getFilesForSignature(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        String username = jwtUtils.extractUsername(token);  // Extraemos el nombre de usuario del JWT
-        User user = userService.findByUsername(username); // Obtener el usuario
-        List<File> files = fileService.getFilesForUser(user);
-        List<FileDto> filesDto = new ArrayList<>();
-        boolean isValidSigned;
-        for (File file : files) {
-            try {
-                isValidSigned = fileService.verifyFileSignature(file.getId(),user);
-            } catch (Exception e) {
-                isValidSigned = false;
-            }
-            filesDto.add(new FileDto(file.getId(),file.getFileName(),file.getFileSignature(),isValidSigned));
-        }
+    public ResponseEntity<?> getAvailableFilesWithSignatures(@RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.replace("Bearer ", "");
+            String username = jwtUtils.extractUsername(token);
+            User user = userService.findByUsername(username);
 
-        return ResponseEntity.ok(filesDto);
+            List<FileDto> files = fileService.getAvailableFilesWithSignatures(user);
+
+            return ResponseEntity.ok(files);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", e.getMessage()));
+        }
     }
+    // Endpoint para compartir un archivo con otro usuario
+    @PostMapping("/{fileId}/share")
+    public ResponseEntity<?> shareFileWithUser(
+            @PathVariable Long fileId,
+            @RequestParam Long userId,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            // Obtener el usuario actual desde el JWT
+            String token = authHeader.replace("Bearer ", "");
+            String username = jwtUtils.extractUsername(token);
+            User owner = userService.findByUsername(username);
+
+            // Compartir el archivo
+            File sharedFile = fileService.shareFileWithUser(fileId, userId, owner);
+            return ResponseEntity.ok("Archivo compartido exitosamente con el usuario.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al compartir el archivo: " + e.getMessage());
+        }
+    }
+
 
     @PostMapping("/{fileId}/sign")
     public ResponseEntity<?> signFile(
@@ -76,18 +92,23 @@ public class FileController {
             String username = jwtUtils.extractUsername(token);  // Extraemos el nombre de usuario del JWT
             User user = userService.findByUsername(username); // Obtener el usuario
             // Firma el archivo y valida la firma en el proceso
-            File signedFile = fileService.signFile(fileId, privateKey, user);
+            FileSignature signedFile = fileService.signFile(fileId, privateKey, user);
             return ResponseEntity.ok(signedFile);  // Regresamos el archivo firmado
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al firmar el archivo: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("error", "Error al firmar el archivo: " + e.getMessage()));
         }
     }
 
     @GetMapping("/{fileId}/verify")
-    public ResponseEntity<?> verifyFileSignature(@PathVariable Long fileId,
-                                                 @RequestParam String privateKey,
-                                                 @AuthenticationPrincipal User user) {
+    public ResponseEntity<?> verifyFileSignature(
+            @PathVariable Long fileId,
+            @RequestHeader("Authorization") String authHeader) {
         try {
+            String token = authHeader.replace("Bearer ", "");
+            String username = jwtUtils.extractUsername(token);
+            User user = userService.findByUsername(username); // Obtener el usuario
+
             boolean isValid = fileService.verifyFileSignature(fileId, user);
             return ResponseEntity.ok(Collections.singletonMap("isValid", isValid));
         } catch (Exception e) {

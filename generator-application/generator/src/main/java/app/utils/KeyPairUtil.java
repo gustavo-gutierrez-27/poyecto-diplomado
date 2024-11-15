@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
@@ -40,4 +41,20 @@ public class KeyPairUtil {
             return getPrivateKeyFromString(privateKeyPEM);
         }
     }
+    public static boolean verifySignature(byte[] fileData, String signature, String publicKeyStr) throws Exception {
+        // Convertir la clave pública de String a PublicKey
+        PublicKey publicKey = getPublicKeyFromString(publicKeyStr);
+
+        // Decodificar la firma desde Base64 a bytes
+        byte[] signatureBytes = Base64.getDecoder().decode(signature);
+
+        // Configurar el objeto Signature para verificar
+        Signature sig = Signature.getInstance("SHA256withRSA");
+        sig.initVerify(publicKey);
+        sig.update(fileData);
+
+        // Verificar la firma
+        return sig.verify(signatureBytes);
+    }
+
 }

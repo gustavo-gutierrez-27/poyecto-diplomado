@@ -9,11 +9,13 @@ import java.util.Set;
 
 @Entity
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String username;
+
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -22,10 +24,14 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<KeyPair> keyPairs = new ArrayList<>();
 
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<File> ownedFiles = new ArrayList<>();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<File> files = new ArrayList<>();
+    private List<FileSignature> fileSignatures = new ArrayList<>();
 
     // Getters y Setters
+
     public Long getId() {
         return id;
     }
@@ -76,21 +82,29 @@ public class User {
         keyPair.setUser(null);
     }
 
-    public List<File> getFiles() {
-        return files;
+    public List<File> getOwnedFiles() {
+        return ownedFiles;
     }
 
-    public void setFiles(List<File> files) {
-        this.files = files;
+    public void setOwnedFiles(List<File> ownedFiles) {
+        this.ownedFiles = ownedFiles;
     }
 
-    public void addFile(File file) {
-        files.add(file);
-        file.setUser(this);
+    public void addOwnedFile(File file) {
+        ownedFiles.add(file);
+        file.setOwner(this);
     }
 
-    public void removeFile(File file) {
-        files.remove(file);
-        file.setUser(null);
+    public void removeOwnedFile(File file) {
+        ownedFiles.remove(file);
+        file.setOwner(null);
+    }
+
+    public List<FileSignature> getFileSignatures() {
+        return fileSignatures;
+    }
+
+    public void setFileSignatures(List<FileSignature> fileSignatures) {
+        this.fileSignatures = fileSignatures;
     }
 }

@@ -1,6 +1,7 @@
 package app.controller;
 
 import app.config.SecretKey;
+import app.config.TokenBlacklist;
 import app.model.User;
 import app.service.UserService;
 import io.jsonwebtoken.Jwts;
@@ -133,5 +134,11 @@ public class AuthController {
             return ResponseEntity.ok(token);
         }
         return ResponseEntity.status(401).body("Credenciales inválidas");
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        TokenBlacklist.revokeToken(token);
+        return ResponseEntity.ok("ok");
     }
 }

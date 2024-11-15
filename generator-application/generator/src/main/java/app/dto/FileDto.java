@@ -4,28 +4,19 @@ package app.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FileDto implements Serializable {
     private Long id;
     private String name;
-    private String signed;
-    private boolean valid;
+    private List<Map<String, Object>> signatures; // Lista de firmas y su validez
 
-    // Constructor
-    public FileDto(Long id,String name, String fileSignature, boolean valid) {
+    public FileDto(Long id, String name, List<Map<String, Object>> signatures) {
         this.id = id;
         this.name = name;
-        this.signed = (fileSignature != null && !fileSignature.isEmpty()) ? "firmado" : "no firmado";
-        this.valid = valid;
-    }
-
-    public boolean isValid() {
-        return valid;
-    }
-
-    public void setValid(boolean valid) {
-        this.valid = valid;
+        this.signatures = signatures;
     }
 
     public Long getId() {
@@ -44,11 +35,11 @@ public class FileDto implements Serializable {
         this.name = name;
     }
 
-    public String getSigned() {
-        return signed;
+    public List<Map<String, Object>> getSignatures() {
+        return signatures;
     }
 
-    public void setSigned(String signed) {
-        this.signed = signed;
+    public void setSignatures(List<Map<String, Object>> signatures) {
+        this.signatures = signatures;
     }
 }
