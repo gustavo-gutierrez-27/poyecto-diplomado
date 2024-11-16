@@ -20,6 +20,9 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.random.RandomGenerator;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -27,7 +30,7 @@ public class AuthController {
 
     private static final String CLIENT_ID = "877884754903-ad606p0qhcroc4nnnuq1ie55isbkt21o.apps.googleusercontent.com";
     private static final String CLIENT_SECRET = "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";
-    private static final String REDIRECT_URI = "http://localhost:8080/api/google/callback";
+    private static final String REDIRECT_URI = "http:localhost:80/google";
     private static final String TOKEN_URI = "https://oauth2.googleapis.com/token";
     private static final String USER_INFO_URI = "https://www.googleapis.com/oauth2/v3/userinfo";
 
@@ -53,12 +56,25 @@ public class AuthController {
     @GetMapping("/google/callback")
     public ResponseEntity<String> googleCallback(@RequestParam("code") String code) {
         try {
+            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            Random random = new Random();
+
+
             // Intercambiar el código de autorización por un token de acceso
             String accessToken = getAccessTokenFromGoogle(code);
 
             // Obtener la información del usuario de Google
             Map<String, Object> userInfo = getUserInfoFromGoogle(accessToken);
             String email = (String) userInfo.get("email");
+            User user = userService.findByUsername(email);
+            if(user == null ){
+                String password = random.ints(8, 0, characters.length())  // Genera una secuencia de números aleatorios
+                        .mapToObj(i -> String.valueOf(characters.charAt(i)))  // Convierte a caracteres
+                        .collect(Collectors.joining());
+                user.setPassword(password);
+                userService.registerUser(user)
+            }
+
 
             // Generar un JWT propio para la aplicación
             String jwtToken = Jwts.builder()
