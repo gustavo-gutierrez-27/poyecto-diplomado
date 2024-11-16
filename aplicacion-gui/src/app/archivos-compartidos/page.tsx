@@ -8,9 +8,8 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 
 // Definimos la interfaz para las firmas
 interface Signature {
-  idUsuario: string;   // ID del usuario que firmó el archivo
-  signature: string;   // Firma del archivo
-  valid: boolean;      // Si la firma es válida o no
+  user: string;   // Nombre de usuario que firmó el archivo
+  valid: boolean; // Si la firma es válida o no
 }
 
 // Definimos la interfaz para los archivos compartidos
@@ -31,21 +30,14 @@ const SharedFileManagerPage = () => {
   const [secretKeyError, setSecretKeyError] = useState<string>('');  // Error en la carga de la clave secreta
   const [fileSelectionError, setFileSelectionError] = useState<string>(''); // Error para selección de archivo
   const [token, setToken] = useState<string | null>(null);  // Token de autenticación
-  const [userId, setUserId] = useState<string | null>(null); // ID del usuario actual
 
   // Usamos useEffect para acceder al token solo en el cliente
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
     if (token) {
       setToken(token);  // Establecer el token en el estado
     } else {
       console.error('No se pudo acceder al token');
-    }
-    if (userId) {
-      setUserId(userId); // Establecer el userId
-    } else {
-      console.error('No se pudo acceder al userId');
     }
   }, []);  // Solo se ejecuta una vez al montar el componente
 
@@ -105,19 +97,8 @@ const SharedFileManagerPage = () => {
       setSigningError('Por favor selecciona un archivo con la clave secreta.');
       return;
     }
-    if (!userId) {
-      setSigningError('No se pudo obtener el ID del usuario.');
-      return;
-    }
 
     setSigningError(''); // Limpiar errores previos si todo es válido
-
-    // Verificamos si el archivo ya ha sido firmado por el usuario
-    const selectedFile = files.find(file => file.id === fileId);
-    if (selectedFile && selectedFile.signUser) {
-      setSigningError('Ya has firmado este archivo.');
-      return;
-    }
 
     try {
       const formData = new FormData();
@@ -177,7 +158,7 @@ const SharedFileManagerPage = () => {
                     <ul>
                       {file.signatures.map((signature, index) => (
                         <li key={index}>
-                          <strong>{signature.signature}</strong> - {signature.valid ? "Válido" : "Inválido"}
+                          <strong>{signature.user}</strong> - {signature.valid ? "✔️" : "❌"}
                         </li>
                       ))}
                     </ul>
@@ -189,7 +170,6 @@ const SharedFileManagerPage = () => {
                   <button
                     className={`${styles.button} ${fileId === file.id ? styles.selectedButton : ''}`} 
                     onClick={() => handleSelectFileFromTable(file)} 
-                    disabled={file.signUser !== null}  // Deshabilitar si ya ha firmado el usuario
                   >
                     {file.signUser ? 'Ya Firmado' : 'Seleccionar'}
                   </button>

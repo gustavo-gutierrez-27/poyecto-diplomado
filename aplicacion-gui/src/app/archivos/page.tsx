@@ -10,8 +10,7 @@ import ProtectedRoute from '@/components/ProtectedRoute'; // Asegúrate de que l
 interface FileData {
   id: number;
   name: string;
-  signed: string;
-  valid: boolean
+  signatures: { user: string; valid: boolean }[]; // Cambié la estructura de firmas
 }
 
 const FileManagerPage = () => {
@@ -98,7 +97,6 @@ const FileManagerPage = () => {
     }
   };
 
-
   // Función para manejar la selección del archivo
   const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
@@ -163,130 +161,120 @@ const FileManagerPage = () => {
 
   // Manejo de la selección de un archivo desde la tabla
   const handleSelectFileFromTable = (file: FileData) => {
-    // Verificamos si el archivo está firmado
-    if (file.signed === 'firmado') {
-      setFileSelectionError('Este archivo ya está firmado y no se puede seleccionar.');
-      setFileId(null);
-    } else {
-      // Guardamos tanto el id como el name del archivo
-      setFileId(file.id);
-      setFileSelectionError('');  // Limpiar cualquier error de selección de archivo
-      setSigningError('');  // Limpiar el error de firma
-    }
+    setFileId(file.id);
+    setFileSelectionError('');  // Limpiar cualquier error de selección de archivo
+    setSigningError('');  // Limpiar el error de firma
   };
 
   return (
     <ProtectedRoute>
-    <div className={styles.container}>
-      <h2 className={styles.title}>Gestión de Archivos</h2>
+      <div className={styles.container}>
+        <h2 className={styles.title}>Gestión de Archivos</h2>
 
-      {/* Tabla de archivos */}
-      <h3 className={styles.tableTitle}>Archivos Disponibles</h3>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Firma</th>
-            <th>Seleccionar</th>
-          </tr>
-        </thead>
-        <tbody>
-          {files.map((file) => (
-            <tr
-              key={file.id}  // Usamos el id del archivo como clave única
-              className={fileId === file.id ? styles.selectedRow : ''}  // Resaltar la fila seleccionada
-            >
-              <td>{file.name}</td>
-              <td className={file.signed === 'firmado' ? styles.signed : styles.notSigned}>
-                {/* Mostrar indicador gráfico solo si el archivo está firmado */}
-                {file.signed === 'firmado' ? (
-                  file.valid ? (
-                    <span className={styles.validSignature}>
-                      <i className="fas fa-check-circle" style={{ color: 'green' }}></i> Firmado (✔️ Válido)
-                    </span>
-                  ) : (
-                    <span className={styles.invalidSignature}>
-                      <i className="fas fa-times-circle" style={{ color: 'red' }}></i> Firmado (❌ Inválido)
-                    </span>
-                  )
-                ) : (
-                  <span>No firmado</span>  // Si no está firmado, no mostramos ningún indicador
-                )}
-              </td>
-              <td>
-                <button
-                  className={`${styles.button} ${fileId === file.id ? styles.selectedButton : ''}`}  // Cambiar estilo del botón seleccionado
-                  onClick={() => handleSelectFileFromTable(file)}  // Al hacer clic, seleccionamos el archivo
-                  disabled={file.signed === 'firmado'}  // Deshabilitar el botón si el archivo está firmado
-                >
-                  {file.signed === 'firmado' ? 'Firmado' : 'Seleccionar'}
-                </button>
-              </td>
+        {/* Tabla de archivos */}
+        <h3 className={styles.tableTitle}>Archivos Disponibles</h3>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Firma</th>
+              <th>Seleccionar</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {files.map((file) => (
+              <tr
+                key={file.id}  // Usamos el id del archivo como clave única
+                className={fileId === file.id ? styles.selectedRow : ''}  // Resaltar la fila seleccionada
+              >
+                <td>{file.name}</td>
+                <td>
+                  {/* Mostrar todas las firmas */}
+                  {(file.signatures && file.signatures.length > 0) ? (
+                    file.signatures.map((signature, index) => (
+                      <div key={index} className={styles.signature}>
+                        {signature.user} {signature.valid ? '✔️' : '❌'}
+                      </div>
+                    ))
+                  ) : (
+                    <span>No firmado</span>
+                  )}
+                </td>
+                <td>
+                  <button
+                    className={`${styles.button} ${fileId === file.id ? styles.selectedButton : ''}`}  // Cambiar estilo del botón seleccionado
+                    onClick={() => handleSelectFileFromTable(file)}  // Al hacer clic, seleccionamos el archivo
+                    disabled={false}  // Ahora siempre está habilitado, no importa si tiene firmas o no
+                  >
+                    {file.signatures && file.signatures.length > 0 ? 'Firmado' : 'Seleccionar'}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-      {/* Formulario para cargar archivo */}
-      <div className={styles.fileButtons}>
-        <form onSubmit={handleUpload} className={styles.form}>
-          <div className={styles.fileInputWrapper}>
-            <label htmlFor="dataFile" className={styles.inputLabel}>Agregar archivo</label>
+        {/* Formulario para cargar archivo */}
+        <div className={styles.fileButtons}>
+          <form onSubmit={handleUpload} className={styles.form}>
+            <div className={styles.fileInputWrapper}>
+              <label htmlFor="dataFile" className={styles.inputLabel}>Agregar archivo</label>
+              <input
+                id="dataFile"
+                type="file"
+                onChange={handleFileSelection}
+                className={styles.input}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className={dataFile ? styles.button : styles.buttonDisabled}
+              disabled={!dataFile}
+            >
+              Cargar Archivo
+            </button>
+          </form>
+
+          {/* Campo para cargar el archivo que contiene la clave secreta */}
+          <div className={styles.inputWrapper}>
+            <label htmlFor="secretKeyFile" className={styles.inputLabel}>Seleccionar archivo de clave secreta</label>
             <input
-              id="dataFile"
+              id="secretKeyFile"
               type="file"
-              onChange={handleFileSelection}
+              onChange={handleSecretKeySelection}
               className={styles.input}
             />
+            {secretKeyError && <p className={styles.error}>{secretKeyError}</p>}
           </div>
 
-          <button
-            type="submit"
-            className={dataFile ? styles.button : styles.buttonDisabled}
-            disabled={!dataFile}
+          {/* Botón para firmar el archivo */}
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();  // Prevenir el comportamiento por defecto de envío del formulario
+              console.log("Formulario de firma enviado");
+              await handleSignFile();  // Llamar a la función de firma
+            }}
+            className={styles.form}  // Agregar clases según sea necesario
           >
-            Cargar Archivo
-          </button>
-        </form>
-
-        {/* Campo para cargar el archivo que contiene la clave secreta */}
-        <div className={styles.inputWrapper}>
-          <label htmlFor="secretKeyFile" className={styles.inputLabel}>Seleccionar archivo de clave secreta</label>
-          <input
-            id="secretKeyFile"
-            type="file"
-            onChange={handleSecretKeySelection}
-            className={styles.input}
-          />
-          {secretKeyError && <p className={styles.error}>{secretKeyError}</p>}
+            <button
+              type="button"  // Usamos "button" para evitar enviar un formulario
+              onClick={handleSignFile}  // Al hacer clic, llamamos a la función para firmar el archivo
+              className={fileId && secretKeyFile ? styles.button : styles.buttonDisabled}  // Aplica el estilo del botón habilitado o deshabilitado
+              disabled={!fileId || !secretKeyFile}  // Deshabilita el botón si no se cumple la condición
+            >
+              Firmar Archivo
+            </button>
+          </form>
         </div>
 
-        {/* Botón para firmar el archivo */}
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();  // Prevenir el comportamiento por defecto de envío del formulario
-            console.log("Formulario de firma enviado");
-            await handleSignFile();  // Llamar a la función de firma
-          }}
-          className={styles.form}  // Agregar clases según sea necesario
-        >
-          <button
-            type="button"  // Usamos "button" para evitar enviar un formulario
-            onClick={handleSignFile}  // Al hacer clic, llamamos a la función para firmar el archivo
-            className={fileId && secretKeyFile ? styles.button : styles.buttonDisabled}  // Aplica el estilo del botón habilitado o deshabilitado
-            disabled={!fileId || !secretKeyFile}  // Deshabilita el botón si no se cumple la condición
-          >
-            Firmar Archivo
-          </button>
-        </form>
+        {/* Mostrar errores */}
+        {uploadError && <p className={styles.error}>{uploadError}</p>}
+        {signingError && <p className={styles.error}>{signingError}</p>}
+        {fileSelectionError && <p className={styles.error}>{fileSelectionError}</p>}
       </div>
-
-      {/* Mostrar errores */}
-      {uploadError && <p className={styles.error}>{uploadError}</p>}
-      {signingError && <p className={styles.error}>{signingError}</p>}
-      {fileSelectionError && <p className={styles.error}>{fileSelectionError}</p>}
-    </div>
     </ProtectedRoute>
+
   );
 };
 

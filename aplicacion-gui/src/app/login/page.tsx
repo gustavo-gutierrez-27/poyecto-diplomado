@@ -95,7 +95,7 @@ const LoginPage = () => {
             "Iniciar Sesión"
           )}
         </button>
-        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+        {errorMessage && <p className={styles.error}>No se pudo iniciar sesión. Credenciales inválidas</p>}
       </form>
 
       {/* Botón para Google Login */}

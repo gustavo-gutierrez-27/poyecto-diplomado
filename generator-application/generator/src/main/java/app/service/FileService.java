@@ -96,20 +96,30 @@ public class FileService {
         byte[] digitalSignature = Base64.getDecoder().decode(fileSignature.getSignature());
         return signature.verify(digitalSignature);
     }
+
+
     public List<FileDto> getAvailableFilesWithSignatures(User user) {
         List<FileDto> fileDtos = new ArrayList<>();
 
-        // Archivos propios
+        // Solo archivos propios
         List<File> userFiles = fileRepository.findByOwnerId(user.getId());
 
-        // Archivos compartidos
-        List<File> sharedFiles = fileRepository.findFilesSharedWithUser(user.getId());
-
+        // Convertir los archivos propios a FileDto
         for (File file : userFiles) {
             FileDto fileDto = buildFileDto(file);
             fileDtos.add(fileDto);
         }
 
+        return fileDtos;
+    }
+
+    public List<FileDto> getSharedFiles(User user) {
+        List<FileDto> fileDtos = new ArrayList<>();
+
+        // Obtener los archivos compartidos con el usuario
+        List<File> sharedFiles = fileRepository.findFilesSharedWithUser(user.getId());
+
+        // Convertir los archivos compartidos a FileDto
         for (File file : sharedFiles) {
             FileDto fileDto = buildFileDto(file);
             fileDtos.add(fileDto);
@@ -117,6 +127,9 @@ public class FileService {
 
         return fileDtos;
     }
+
+
+
     // Método para compartir un archivo con otro usuario
     public File shareFileWithUser(Long fileId, Long userIdToShareWith, User owner) {
         // Buscar el archivo y verificar que pertenece al usuario actual

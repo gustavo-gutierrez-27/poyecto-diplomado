@@ -29,6 +29,7 @@ const Header = () => {
               <li><a href="/generate">Generar Llave</a></li>
               <li><a href="/archivos">Gestión de Archivos</a></li>
               <li><a href="/archivos-compartidos">Archivos Compartidos</a></li>
+              <li><a href="/compartir">Compartir Archivos</a></li>
             </>
           )}
           <li>

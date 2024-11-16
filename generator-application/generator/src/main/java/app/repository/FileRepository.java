@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface FileRepository extends JpaRepository<File, Long> {
     List<File> findByOwnerId(Long userId);
-    Optional<File> findByIdAndOwner(Long id, User user);
+    Optional<File> findByIdAndOwner(Long id, User owner);
 
     // Buscar archivos que se compartieron con un usuario específico
     @Query("SELECT f FROM File f JOIN f.sharedWithUsers u WHERE u.id = :userId")
