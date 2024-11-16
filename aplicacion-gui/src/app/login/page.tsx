@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./styles.module.css";
@@ -12,6 +12,15 @@ const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
+
+  // Verificamos si ya hay un token almacenado en el localStorage
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      // Si ya hay un token, redirigimos automáticamente
+      router.push("/inicio");  // O a donde desees llevar al usuario
+    }
+  }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +71,7 @@ const LoginPage = () => {
 
   const handleGoogleLogin = () => {
     // Redirige al backend para manejar la autenticación con Google
-    window.location.href = "http://localhost:8080/api/login/google"; // Asegúrate que esta ruta esté configurada en tu backend
+    window.location.href = "http://localhost:8080/api/google/login";
   };
 
   return (

@@ -30,7 +30,7 @@ public class AuthController {
 
     private static final String CLIENT_ID = "877884754903-ad606p0qhcroc4nnnuq1ie55isbkt21o.apps.googleusercontent.com";
     private static final String CLIENT_SECRET = "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";
-    private static final String REDIRECT_URI = "http:localhost:80/google";
+    private static final String REDIRECT_URI = "http://localhost:80/google";
     private static final String TOKEN_URI = "https://oauth2.googleapis.com/token";
     private static final String USER_INFO_URI = "https://www.googleapis.com/oauth2/v3/userinfo";
 
@@ -72,7 +72,7 @@ public class AuthController {
                         .mapToObj(i -> String.valueOf(characters.charAt(i)))  // Convierte a caracteres
                         .collect(Collectors.joining());
                 user.setPassword(password);
-                userService.registerUser(user)
+                userService.registerUser(user);
             }
 
 
