@@ -13,6 +13,8 @@ import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.LinkedMultiValueMap;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -59,7 +61,7 @@ public class AuthController {
             String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             Random random = new Random();
 
-
+            System.out.println("Código de autorización: " + code);
             // Intercambiar el código de autorización por un token de acceso
             String accessToken = getAccessTokenFromGoogle(code);
 
@@ -68,6 +70,8 @@ public class AuthController {
             String email = (String) userInfo.get("email");
             User user = userService.findByUsername(email);
             if(user == null ){
+                user = new User();
+                user.setUsername(email);
                 String password = random.ints(8, 0, characters.length())  // Genera una secuencia de números aleatorios
                         .mapToObj(i -> String.valueOf(characters.charAt(i)))  // Convierte a caracteres
                         .collect(Collectors.joining());
@@ -87,23 +91,24 @@ public class AuthController {
             return ResponseEntity.ok(jwtToken);
 
         } catch (Exception e) {
+            System.out.println("Error: " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la autenticación con Google");
         }
     }
 
     private String getAccessTokenFromGoogle(String code) throws IOException {
         // Crear los parámetros de la solicitud
-        Map<String, String> params = new HashMap<>();
-        params.put("client_id", CLIENT_ID);
-        params.put("client_secret", CLIENT_SECRET);
-        params.put("code", code);
-        params.put("redirect_uri", REDIRECT_URI);
-        params.put("grant_type", "authorization_code");
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("client_id", CLIENT_ID);
+        params.add("client_secret", CLIENT_SECRET);
+        params.add("code", code);
+        params.add("redirect_uri", REDIRECT_URI);
+        params.add("grant_type", "authorization_code");
 
         // Crear la solicitud HTTP
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<Map<String, String>> entity = new HttpEntity<>(params, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
 
         // Enviar la solicitud POST a TOKEN_URI
         ResponseEntity<Map> response = restTemplate.exchange(TOKEN_URI, HttpMethod.POST, entity, Map.class);
@@ -113,6 +118,7 @@ public class AuthController {
             throw new IOException("Error al obtener el token de acceso de Google");
         }
     }
+
 
     private Map<String, Object> getUserInfoFromGoogle(String accessToken) {
         RestTemplate restTemplate = new RestTemplate();
