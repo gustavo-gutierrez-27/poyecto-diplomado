@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/api/register", "/api/login").permitAll()
+                                .requestMatchers("/api/register", "/api/login", "api/google/login", "api/google/callback").permitAll()
                                 .anyRequest().authenticated() // Requiere autenticación para cualquier otra solicitud
                 )
                 .formLogin(withDefaults())
